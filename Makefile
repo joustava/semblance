@@ -2,6 +2,12 @@ init:
 	pipenv
 
 test:
-	python -m unittest discover -s tests
+	green -vvv
 
-.PHONY: init test
+coverage:
+	green -r
+
+run:
+	python ./src/semblance/semblance.py
+
+.PHONY: init run test coverage

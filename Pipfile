@@ -4,9 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+green = "*"
+pylint = "*"
+autopep8 = "*"
 
 [packages]
 tlc = {editable = true, path = "."}
+opencv-python = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.8"

@@ -1,7 +1,7 @@
 
 import unittest
 # ignoring error as pylint nags as it doesn't know about editable local installs?
-from tlc import classifier  # pylint: disable=import-error
+from semblance import classifier  # pylint: disable=import-error
 
 
 class TestStringMethods(unittest.TestCase):
