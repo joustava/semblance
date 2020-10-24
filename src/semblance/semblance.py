@@ -4,6 +4,10 @@ from capture_manager import CaptureManager
 from window_manager import WindowManager
 from filters.edge import canny, laplacian
 
+from contours.detection import enclosingcircle
+from contours.detection import minimumarea
+from contours.detection import bbox
+
 
 class Semblance(object):
     def __init__(self, directory="./tmp"):
@@ -21,9 +25,9 @@ class Semblance(object):
                 # edges = canny.apply(frame)
                 # frame[edges > 100] = [255, 255, 255]
 
-                edges = laplacian.apply(frame)
-                cv2.merge(edges, frame)
-
+                # edges = laplacian.apply(frame)
+                # cv2.merge(edges, frame)
+                bbox(frame)
                 pass
 
             self._captureManager.exitFrame()
