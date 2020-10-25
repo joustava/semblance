@@ -1,6 +1,6 @@
-# Traffic Light Classifier
+# Semblance
 
-> Python project aiming to build a traffic light image classifier which detects the state of each traffic light. This project created as one possible solution to the final project of Udacity's Nano Degree **Intro to Self Driving Cars** in the School of **Autonomous Systems**.
+> Personal Python project with the aim to learn more about OpenCV and Computer Vision to support my current**[Self-Driving Car Engineer ND](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013)** in the School of **Autonomous Systems** studies. Code is based on [examples](https://github.com/PacktPublishing/Learning-OpenCV-4-Computer-Vision-with-Python-Third-Edition) accompanying this [book](https://www.packtpub.com/product/learning-opencv-4-computer-vision-with-python-3-third-edition/9781789531619).
 
 ## Getting Started
 
@@ -44,6 +44,12 @@ Then before starting to hack away, run the tests to see if everything works as e
 make test
 ```
 
+Run it with
+
+```bash
+make run
+```
+
 ## Details
 
 The project layout is based on chapter [Structuring Your Project](https://docs.python-guide.org/writing/structure/) of the book [The Hitchhiker’s Guide to Python!](https://docs.python-guide.org/).
@@ -56,5 +62,3 @@ Documentation is generated with [sphinx](https://www.sphinx-doc.org/), on a mac 
 `brew install sphinx-do` (assuming you have homebrew installed).
 
 Testing is awesome, checkout [Testing Your Code](https://docs.python-guide.org/writing/tests/) for basics.
-
-During development/testing the package need to be installed as editable type `pipenv install -e .`
