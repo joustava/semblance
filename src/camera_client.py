@@ -1,3 +1,5 @@
+import imagezmq as mq
+from imutils.video import VideoStream
 import datetime
 import sys
 import io
@@ -35,11 +37,12 @@ class PiVideoStream:
         self.frames = Queue(maxsize=128)
         # self.frame = None
         self.stopped = False
+        self.data = (None, 0)
 
     def start(self):
         # start the thread to read frames from the video stream
         t = Thread(target=self.update, args=())
-        t.daemon = True
+        # t.daemon = True
         t.start()
         return self
 
@@ -59,6 +62,7 @@ class PiVideoStream:
                 self.rawCapture.seek(0)
 
                 frame = self.rawCapture.read()
+                # size = len(frame)
                 # reset the stream for next capture
                 self.rawCapture.seek(0)
                 self.rawCapture.truncate()
@@ -67,25 +71,13 @@ class PiVideoStream:
                     self.stop()
                     return
                 # add the frame to the queue
-                self.frames.put((frame, size))
-
-        # for f in self.stream:
-        #     # grab the frame from the stream and clear the stream in
-        #     # preparation for the next frame
-        #     self.frame = f.array
-        #     self.rawCapture.truncate(0)
-
-        #     # if the thread indicator variable is set, stop the thread
-        #     # and resource camera resources
-        #     if self.stopped:
-        #         self.stream.close()
-        #         self.rawCapture.close()
-        #         self.camera.close()
-        #         return
+                #self.frames.put((frame, size))
+                self.data = (frame, size)
 
     def read(self):
         # return the frame most recently read
-        return self.frames.get()
+        # return self.frames.get()
+        return self.data
 
     def stop(self):
         # indicate that the thread should be stopped
@@ -124,78 +116,81 @@ class FPS:
         # compute the (approximate) frames per second
         return self._numFrames / self.elapsed()
 
-# scp -r src/picamexample/client.py pi@raspberrypi.local:/home/pi/client.py
-# basic version [INFO] approx. FPS: 16.09 meaning that this version can process max 16 frames a second at 640/480
+# # scp -r src/picamexample/client.py pi@raspberrypi.local:/home/pi/client.py
+# # basic version [INFO] approx. FPS: 16.09 meaning that this version can process max 16 frames a second at 640/480
+# # A queue implementation is extremely slow as linux has speed limitation of pipe implemetation (we are handling image data)
 
 
-client_socket = socket.socket()
-client_socket.connect(('192.168.2.108', 8000))
-connection = client_socket.makefile('wb')
-try:
-    vs = PiVideoStream(resolution=(640, 480), framerate=32).start()
-    time.sleep(1.0)
-    start = time.time()
-    fps = FPS().start()
-    while True:
-        frame, size = vs.read()
-        connection.write(struct.pack('<L', size))
-        connection.flush()
-        connection.write(frame)
-        fps.update()
-        if time.time() - start > 30:
-            break
+# client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# client_socket.connect(('192.168.2.108', 8000))
+# connection = client_socket.makefile('wb')
+# try:
+#     vs = PiVideoStream(resolution=(640, 480), framerate=32).start()
+#     time.sleep(1.0)
+#     start = time.time()
+#     fps = FPS().start()
+#     while True:
+#         frame, size = vs.read()
+#         connection.write(struct.pack('<L', size))
+#         connection.write(frame)
+#         connection.flush()
+#         fps.update()
+#         if time.time() - start > 30:
+#             break
 
-    # with picamera.PiCamera() as camera:
-    #     camera.resolution = (640, 480)
-    #     camera.framerate = 30
-    #     time.sleep(2)
-    #     start = time.time()
-    #     stream = io.BytesIO()
-    #     # Use the video-port for captures...
+#     # with picamera.PiCamera() as camera:
+#     #     camera.resolution = (640, 480)
+#     #     camera.framerate = 30
+#     #     time.sleep(2)
+#     #     start = time.time()
+#     #     stream = io.BytesIO()
+#     #     # Use the video-port for captures...
 
-    #     stream = camera.capture_continuous(stream, 'jpeg',
-    #                                        use_video_port=True)
+#     #     stream = camera.capture_continuous(stream, 'jpeg',
+#     #                                        use_video_port=True)
 
-    #     fps = FPS().start()
-    #     for frame in stream:
-    #         connection.write(struct.pack('<L', stream.tell()))
-    #         connection.flush()
-    #         stream.seek(0)
-    #         connection.write(stream.read())
-    #         if time.time() - start > 30:
-    #             break
-    #         stream.seek(0)
-    #         stream.truncate()
-    #         fps.update()
+#     #     fps = FPS().start()
+#     #     for frame in stream:
+#     #         connection.write(struct.pack('<L', stream.tell()))
+#     #         connection.flush()
+#     #         stream.seek(0)
+#     #         connection.write(stream.read())
+#     #         if time.time() - start > 30:
+#     #             break
+#     #         stream.seek(0)
+#     #         stream.truncate()
+#     #         fps.update()
 
-    fps.stop()
-    connection.write(struct.pack('<L', 0))
-finally:
-    connection.close()
-    client_socket.close()
-    print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+#     fps.stop()
+#     connection.write(struct.pack('<L', 0))
+# finally:
+#     connection.close()
+#     client_socket.close()
+#     print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
-# From https://github.com/jrosebr1/imutils
+# # From https://github.com/jrosebr1/imutils
 
 
 # zmq version
-# from imutils.video import VideoStream
-# import imagezmq as mq
-# import socket
-# import time
 
-# sender = mq.ImageSender(connect_to="tcp://192.168.2.108:5555")
+sender = mq.ImageSender(connect_to="tcp://192.168.2.108:5555")
 
-# host = socket.gethostname()
-# # The camera is capable of:
-# #   2592 x 1944 pixel static images and for video
-# #   1080p @ 30fps (Full HD 1920×1080)
-# #   720p @ 60fps (HD Ready 1280×720)
-# #   640x480p 60/90
-# stream = VideoStream(usePiCamera=True).start()
-# time.sleep(2)
+host = socket.gethostname()
+# The camera is capable of:
+#   2592 x 1944 pixel static images and for video
+#   1080p @ 30fps (Full HD 1920×1080)
+#   720p @ 60fps (HD Ready 1280×720)
+#   640x480p 60/90
+stream = PiVideoStream(resolution=(640, 480), framerate=32).start()
+time.sleep(2)
+start = time.time()
+fps = FPS().start()
+while True:
+    frame, size = stream.read()
+    sender.send_jpg(host, frame)
+    fps.update()
+    if time.time() - start > 30:
+        fps.stop()
+        break
 
-# while True:
-#     frame = stream.read()
-#     # sender.send_jpg(host, frame)
-#     sender.send_image(host, frame)
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
