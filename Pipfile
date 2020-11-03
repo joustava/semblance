@@ -12,6 +12,9 @@ autopep8 = "*"
 tlc = {editable = true, path = "."}
 opencv-python = "*"
 numpy = "*"
+zmq = "*"
+imutils = "*"
+imagezmq = "*"
 
 [requires]
 python_version = "3.8"

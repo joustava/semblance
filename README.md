@@ -62,3 +62,14 @@ Documentation is generated with [sphinx](https://www.sphinx-doc.org/), on a mac 
 `brew install sphinx-do` (assuming you have homebrew installed).
 
 Testing is awesome, checkout [Testing Your Code](https://docs.python-guide.org/writing/tests/) for basics.
+
+
+
+# Pipenv steps rpi
+
+1. sudo apt install pipenv
+2. create project folder and init pipenv
+sudo apt install libatlas3-base # numpy?
+3. install pipenv install imagezmq imutils picamera
+4.  sudo apt install python3-opencv
+
