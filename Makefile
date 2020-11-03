@@ -12,9 +12,14 @@ run:
 	python ./src/semblance/semblance.py
 
 update-picam:
-	scp -r src/camera_client.py pi@raspberrypi.local:/home/pi/projects/picam/client.py
+	scp -r src/pi/* pi@raspberrypi.local:/home/pi/projects/picam/
 
-proxy-picam:
-	python ./src/semblance/camera_proxy.py
+run-zmq-hub:
+	PYTHONDONTWRITEBYTECODE=1
+	python ./src/semblance/camera_zmq_hub.py
 
-.PHONY: init run test coverage
+run-tcp-server:
+	PYTHONDONTWRITEBYTECODE=1
+	python ./src/semblance/camera_tcp_server.py
+
+.PHONY: init run-tcp-server run-zmq-hub test coverage
