@@ -12,8 +12,7 @@ connection = server_socket.accept()[0].makefile('rb')
 
 try:
     while True:
-        image_len = struct.unpack(
-            '<L', connection.read(struct.calcsize('<L')))[0]
+        image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
         if not image_len:
             break
 
@@ -22,7 +21,7 @@ try:
         image_stream.seek(0)
 
         frame = cv2.imdecode(np.frombuffer(image_stream.read(), np.uint8), 1)
-
+        bbox(frame)
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

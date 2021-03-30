@@ -2,48 +2,44 @@ import io
 import socket
 import struct
 import time
-from picamera import PiCamera
+from picamera import PiCamera, Color
+import datetime as dt
 from fps import FPS
+from split_frames import SplitFrames
 
-# # scp -r src/picamexample/client.py pi@raspberrypi.local:/home/pi/client.py
-# # basic version [INFO] approx. FPS: 16.09 meaning that this version can process max 16 frames a second at 640/480
-# # A queue implementation is extremely slow as linux has speed limitation of pipe implemetation (we are handling image data)
+camera = PiCamera()
+camera.resolution = (800, 600)
+camera.framerate = 30
+camera.iso = 800
+# camera.annotate_background = Color('blue')
+# camera.annotate_text = "PiCam Client"
+time.sleep(2)
 
-# imagezmq and no queue for frames gives about 18frames/sec
-
-
-# This version reports around 29fps.
+def frame_sequence():
+    stream = io.BytesIO()
+    while True:
+        yield stream
+        connection.write(struct.pack('<L', stream.tell()))
+        connection.flush()
+        stream.seek(0)
+        connection.write(stream.read())
+        stream.seek(0)
+        stream.truncate()
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.2.108', 8000))
+client_socket.connect(('192.168.2.107', 8000))
 connection = client_socket.makefile('wb')
 
 try:
-    with PiCamera() as camera:
-        camera.resolution = (640, 480)
-        camera.framerate = 30
-        time.sleep(2)
-        start = time.time()
-        stream = io.BytesIO()
-        # Use the video-port for captures...
-
-        fps = FPS().start()
-        for frame in camera.capture_continuous(stream, 'jpeg',
-                                               use_video_port=True):
-            connection.write(struct.pack('<L', stream.tell()))
-            connection.flush()
-            stream.seek(0)
-            connection.write(stream.read())
-            if time.time() - start > 30:
-                break
-            stream.seek(0)
-            stream.truncate()
-            fps.update()
-
-        fps.stop()
-        connection.write(struct.pack('<L', 0))
+    # output = SplitFrames(connection)
+   
+    fps = FPS().start()
+    for _ in camera.capture_sequence(frame_sequence(), 'jpeg', use_video_port=True):
+        fps.update()
 
 finally:
+    fps.stop()
+    connection.write(struct.pack('<L', 0))
     connection.close()
     client_socket.close()
     print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))

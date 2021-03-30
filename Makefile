@@ -22,4 +22,8 @@ run-tcp-server:
 	PYTHONDONTWRITEBYTECODE=1
 	python ./src/semblance/camera_tcp_server.py
 
+run-client:
+	PYTHONDONTWRITEBYTECODE=1
+	python ./src/semblance/pi_client.py
+
 .PHONY: init run-tcp-server run-zmq-hub test coverage

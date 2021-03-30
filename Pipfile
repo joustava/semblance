@@ -15,6 +15,7 @@ numpy = "*"
 zmq = "*"
 imutils = "*"
 imagezmq = "*"
+tensorflow = "==2.2.0"
 
 [requires]
 python_version = "3.8"

@@ -1,5 +1,5 @@
-#  From https: // github.com/jrosebr1/imutils
-import datetime
+#  From https://github.com/jrosebr1/imutils
+import datetime as dt
 
 
 class FPS:
@@ -12,12 +12,12 @@ class FPS:
 
     def start(self):
         # start the timer
-        self._start = datetime.datetime.now()
+        self._start = dt.datetime.now()
         return self
 
     def stop(self):
         # stop the timer
-        self._end = datetime.datetime.now()
+        self._end = dt.datetime.now()
 
     def update(self):
         # increment the total number of frames examined during the

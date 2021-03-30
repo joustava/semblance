@@ -2,7 +2,7 @@
 
 > Personal Python project with the aim to learn more about OpenCV and Computer Vision to support my current**[Self-Driving Car Engineer ND](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013)** in the School of **Autonomous Systems** studies. Code is based on [examples](https://github.com/PacktPublishing/Learning-OpenCV-4-Computer-Vision-with-Python-Third-Edition) accompanying this [book](https://www.packtpub.com/product/learning-opencv-4-computer-vision-with-python-3-third-edition/9781789531619).
 
-## Getting Started
+## What you need
 
 This project is made with
 
@@ -65,11 +65,30 @@ Testing is awesome, checkout [Testing Your Code](https://docs.python-guide.org/w
 
 
 
-# Pipenv steps rpi
+# RPI
 
+Follow [these instructions](https://joostoostdijk.com/posts/raspberry-pi-camera-setup-notes) to prepare a RPI with sd card and wifi connection.
+
+find rpi on your network: e.g nmap -sP 192.168.2.0/24
+
+ssh to the rpi and install these deps:
 1. sudo apt install pipenv
 2. create project folder and init pipenv
 sudo apt install libatlas3-base # numpy?
 3. install pipenv install imagezmq imutils picamera
 4.  sudo apt install python3-opencv
+
+
+# UPDATE (27/03/2021)
+
+until: https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/install.html
+- From within <rootdir>/TensorFlow/models/research/
+protoc object_detection/protos/*.proto --python_out=.
+
+# Resources
+
+- [Track objects in the real world with TensorFlow](https://medium.com/hal24k-techblog/how-to-track-objects-in-the-real-world-with-tensorflow-sort-and-opencv-a64d9564ccb1) article
+- [COCO dataset](https://cocodataset.org/)
+- [TensorFlow object detection tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io)
+
 

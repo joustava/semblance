@@ -1,6 +1,5 @@
 import cv2
-
-
+import numpy as np
 class WindowManager(object):
     def __init__(self, windowName, keyPressCallback):
         self.keyPressCallback = keyPressCallback
@@ -19,8 +18,8 @@ class WindowManager(object):
         cv2.imshow(self._windowName, frame)
 
     def destroyWindow(self):
-        cv2.destroyWindow(self._windowName)
         self.isWindowCreated = False
+        cv2.destroyWindow(self._windowName)
 
     def processEvents(self):
         keycode = cv2.waitKey(1)
