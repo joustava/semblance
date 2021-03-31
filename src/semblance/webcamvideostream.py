@@ -1,5 +1,6 @@
 import os
 import cv2
+import datetime as dt
 from threading import Thread
 
 class WebcamVideoStream:
@@ -16,12 +17,14 @@ class WebcamVideoStream:
         # be stopped
         self.stopped = False
 
+
     def start(self):
         # start the thread to read frames from the video stream
         t = Thread(target=self.update, name=self.name, args=())
         t.daemon = True
         t.start()
         return self
+        
 
     def update(self):
         # keep looping infinitely until the thread is stopped
@@ -33,9 +36,11 @@ class WebcamVideoStream:
             # otherwise, read the next frame from the stream
             (self.grabbed, self.frame) = self.stream.read()
 
+
     def read(self):
         # return the frame most recently read
         return self.frame
+
 
     def stop(self):
         # indicate that the thread should be stopped

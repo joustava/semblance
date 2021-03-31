@@ -2,7 +2,7 @@ import os
 import sys
 import signal
 from threading import Thread
-
+import datetime as dt
 import cv2
 
 # from capture_manager import CaptureManager
@@ -31,6 +31,7 @@ class Semblance(object):
         self._directory = directory
         self._windowManager = WindowManager('Semblance', self._onKeyPress)
         self.selection = 0
+        self._take = False
         if source == 0:
             self._stream = WebcamVideoStream(0).start()
         else:
@@ -43,16 +44,23 @@ class Semblance(object):
             if frame is not None:
                 
                 frame = canny.detect(frame)
-
                 self._windowManager.show(frame)
+                if(self._take):
+                    self.snapshot(frame)
+                    self._take = False
             
             self._windowManager.processEvents()
 
     def _onKeyPress(self, keycode):
         if keycode in (ord('q'), 27): # Quit/ESC
             self._windowManager.destroyWindow()
-        # if keycode == ord("n"):
-        #     self.toggle()
+        if keycode == ord("s"):
+            self._take = True
+
+    def snapshot(self, frame):
+        path = "~/Downloads/snapshot_" + dt.datetime.today().isoformat() + ".jpg"
+        path = os.path.expanduser(path)
+        cv2.imwrite(path, frame)
 
     def _toggle(self):
         if self.selection == 0:
@@ -65,8 +73,6 @@ class Semblance(object):
         self._windowManager.destroyWindow()
         sys.exit(0)
 
-
-
-
+        
 if __name__ == "__main__":
     Semblance(0).run()
