@@ -147,3 +147,4 @@ dmypy.json
 .vscode
 tmp
 wpa_supplicant.conf
+test.py

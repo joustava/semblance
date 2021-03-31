@@ -31,4 +31,4 @@ class CannyEdgeDetector:
        
         return np.bitwise_or(_frame, frame)
 
-
+    
