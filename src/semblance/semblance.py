@@ -5,17 +5,24 @@ from threading import Thread
 from window_manager import WindowManager
 from filters.edge import canny, laplacian
 
-from contours.detection import enclosingcircle
+from contours.detection import CircleDetector
 from contours.detection import minimumarea
 from contours.detection import bbox
 
 from webcamvideostream import WebcamVideoStream
 from remotepicamstream import RemotePiCamStream
 
+from face.detector import FaceDetector
+
+faces = FaceDetector()
+circles = CircleDetector()
+
+detectors = [faces, circles]
 class Semblance(object):
     def __init__(self, source=0, directory="./tmp"):
         self._directory = directory
         self._windowManager = WindowManager('Semblance', self.onKeyPress)
+        self.selection = 0
         if source == 0:
             self._stream = WebcamVideoStream(0).start()
         else:
@@ -26,17 +33,26 @@ class Semblance(object):
         while self._windowManager.isWindowCreated:
             frame = self._stream.read()
             if frame is not None:
-                bbox(frame)
-                frame = cv2.putText(frame, "rpi", (50, 50), cv2.FONT_ITALIC, 
-                   1, (255, 0, 0), 1, cv2.LINE_AA)
+                
+                frame = faces.detect(frame)
 
                 self._windowManager.show(frame)
             
             self._windowManager.processEvents()
 
     def onKeyPress(self, keycode):
-        if keycode == 27: # ESC
+        if keycode in (ord('q'), 27): # Quit/ESC
             self._windowManager.destroyWindow()
+        # if keycode == ord("n"):
+        #     self.toggle()
+
+    def toggle(self):
+        if self.selection == 0:
+            self.selection = 1
+        else:
+            self.selection = 0
+
+
 
 
 if __name__ == "__main__":

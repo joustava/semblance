@@ -27,16 +27,18 @@ def minimumarea(image):
         box = numpy.int0(box)
         cv2.drawContours(image, [box], 0, (0, 0, 255), 3)
 
+class CircleDetector:
+    def detect(self, image):
+        ret, tresh = cv2.threshold(cv2.cvtColor(
+            image, cv2.COLOR_BGR2GRAY), 127, 255, cv2.THRESH_BINARY)
 
-def enclosingcircle(image):
-    ret, tresh = cv2.threshold(cv2.cvtColor(
-        image, cv2.COLOR_BGR2GRAY), 127, 255, cv2.THRESH_BINARY)
+        contours, hier = cv2.findContours(
+            tresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    contours, hier = cv2.findContours(
-        tresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    for c in contours:
-        (x, y), radius = cv2.minEnclosingCircle(c)
-        center = (int(x), int(y))
-        radius = int(radius)
-        cv2.circle(image, center, radius, (0, 255, 0), 2)
+        for c in contours:
+            (x, y), radius = cv2.minEnclosingCircle(c)
+            center = (int(x), int(y))
+            radius = int(radius)
+            cv2.circle(image, center, radius, (0, 255, 0), 2)
+        
+        return image

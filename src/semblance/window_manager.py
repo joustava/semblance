@@ -18,10 +18,10 @@ class WindowManager(object):
         cv2.imshow(self._windowName, frame)
 
     def destroyWindow(self):
-        self.isWindowCreated = False
         cv2.destroyWindow(self._windowName)
+        self._isWindowCreated = False
 
     def processEvents(self):
-        keycode = cv2.waitKey(1)
+        keycode = cv2.waitKey(1) #& 0xFF
         if self.keyPressCallback is not None and keycode != -1:
             self.keyPressCallback(keycode)
