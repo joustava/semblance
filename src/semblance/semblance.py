@@ -13,11 +13,14 @@ from webcamvideostream import WebcamVideoStream
 from remotepicamstream import RemotePiCamStream
 
 from face.detector import FaceDetector
+from contours.canny_edge_detector import CannyEdgeDetector
 
 faces = FaceDetector()
 circles = CircleDetector()
+canny = CannyEdgeDetector()
 
-detectors = [faces, circles]
+
+detectors = [faces, circles, canny]
 class Semblance(object):
     def __init__(self, source=0, directory="./tmp"):
         self._directory = directory
@@ -34,7 +37,7 @@ class Semblance(object):
             frame = self._stream.read()
             if frame is not None:
                 
-                frame = faces.detect(frame)
+                frame = canny.detect(frame)
 
                 self._windowManager.show(frame)
             
@@ -56,4 +59,4 @@ class Semblance(object):
 
 
 if __name__ == "__main__":
-    Semblance(8000).run()
+    Semblance(0).run()

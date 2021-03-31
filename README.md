@@ -71,6 +71,7 @@ Follow [these instructions](https://joostoostdijk.com/posts/raspberry-pi-camera-
 
 find rpi on your network: e.g nmap -sP 192.168.2.0/24
 
+
 ssh to the rpi and install these deps:
 1. sudo apt install pipenv
 2. create project folder and init pipenv
