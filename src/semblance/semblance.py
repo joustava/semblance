@@ -1,6 +1,10 @@
 import os
-import cv2
+import sys
+import signal
 from threading import Thread
+
+import cv2
+
 # from capture_manager import CaptureManager
 from window_manager import WindowManager
 from filters.edge import canny, laplacian
@@ -23,8 +27,9 @@ canny = CannyEdgeDetector()
 detectors = [faces, circles, canny]
 class Semblance(object):
     def __init__(self, source=0, directory="./tmp"):
+        signal.signal(signal.SIGINT, self._handle_signal)
         self._directory = directory
-        self._windowManager = WindowManager('Semblance', self.onKeyPress)
+        self._windowManager = WindowManager('Semblance', self._onKeyPress)
         self.selection = 0
         if source == 0:
             self._stream = WebcamVideoStream(0).start()
@@ -43,17 +48,22 @@ class Semblance(object):
             
             self._windowManager.processEvents()
 
-    def onKeyPress(self, keycode):
+    def _onKeyPress(self, keycode):
         if keycode in (ord('q'), 27): # Quit/ESC
             self._windowManager.destroyWindow()
         # if keycode == ord("n"):
         #     self.toggle()
 
-    def toggle(self):
+    def _toggle(self):
         if self.selection == 0:
             self.selection = 1
         else:
             self.selection = 0
+
+    def _handle_signal(self, signal, frame):
+        print('Exiting Semblance, ciao!')
+        self._windowManager.destroyWindow()
+        sys.exit(0)
 
 
 
