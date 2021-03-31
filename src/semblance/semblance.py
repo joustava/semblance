@@ -7,7 +7,6 @@ import cv2
 
 # from capture_manager import CaptureManager
 from window_manager import WindowManager
-from filters.edge import canny, laplacian
 
 from contours.detection import CircleDetector
 from contours.detection import minimumarea

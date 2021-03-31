@@ -2,7 +2,7 @@ import cv2
 import numpy
 
 
-def apply(image, sigma=0.4, k=3):
+def apply(iframemage, sigma=0.4, k=3):
     """
     Applies the Canny Edge detection by setting the upper and lower bounds based
     on the median value of pixel intensity in the whole image.
