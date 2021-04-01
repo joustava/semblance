@@ -4,7 +4,7 @@ import signal
 from threading import Thread
 import datetime as dt
 import cv2
-
+import numpy as np
 # from capture_manager import CaptureManager
 from window_manager import WindowManager
 
@@ -17,12 +17,14 @@ from remotepicamstream import RemotePiCamStream
 
 from face.detector import FaceDetector
 from contours.canny_edge_detector import CannyEdgeDetector
+from scanner.pdf_scanner import PDFScanner
 
 faces = FaceDetector()
 # circles = CircleDetector()
 canny = CannyEdgeDetector()
+scanner = PDFScanner()
 
-detectors = [faces, canny]
+detectors = [scanner, canny, faces]
 
 class Semblance(object):
     def __init__(self, source=0, directory="./tmp"):
@@ -30,6 +32,7 @@ class Semblance(object):
         self._directory = directory
         self._windowManager = WindowManager('Semblance', self._onKeyPress)
         self._selection = 0
+        self._overlay = False
         self._take = False
         if source == 0:
             self._stream = WebcamVideoStream(0).start()
@@ -42,10 +45,15 @@ class Semblance(object):
             frame = self._stream.read()
             if frame is not None:
                 
-                frame = detectors[self._selection].detect(frame)
-                self._windowManager.show(frame)
+                _frame = detectors[self._selection].detect(frame)
+                
+                if(self._overlay):
+                    _frame = np.bitwise_or(_frame, frame)
+                
+                
+                self._windowManager.show(_frame)
                 if(self._take):
-                    self.snapshot(frame)
+                    self.snapshot(_frame)
                     self._take = False
             
             self._windowManager.processEvents()
@@ -57,6 +65,8 @@ class Semblance(object):
             self._take = True
         if keycode == ord("d"):
             self._toggle()
+        if keycode == ord("o"):
+            self._overlay = not self._overlay
 
     def snapshot(self, frame):
         path = "~/Downloads/snapshot_" + dt.datetime.today().isoformat() + ".jpg"
@@ -76,4 +86,4 @@ class Semblance(object):
 
 
 if __name__ == "__main__":
-    Semblance(0).run()
+    Semblance(8000).run()
