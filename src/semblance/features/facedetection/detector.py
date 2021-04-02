@@ -8,7 +8,7 @@ class FaceDetector:
   for those detections that exceed the configured min confidence score.
   """
   def __init__(self, confidence=0.5):
-    self._net = cv2.dnn.readNetFromCaffe("src/semblance/face/deploy.prototxt", "src/semblance/face/res10_300x300_ssd_iter_140000.caffemodel")
+    self._net = cv2.dnn.readNetFromCaffe("src/semblance/features/facedetection/deploy.prototxt", "src/semblance/features/facedetection/res10_300x300_ssd_iter_140000.caffemodel")
     self._confidence = confidence
 
   def detect(self, frame):

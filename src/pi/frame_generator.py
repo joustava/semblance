@@ -10,6 +10,9 @@ class FrameGenerator(object):
         """
         Creates a new FrameGenerator that connect to tcp://addres:port
         """
+        self.connect(address, port)
+
+    def connect(self, addres, port):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.connect((address, port))
         self._conn = self._socket.makefile('wb')

@@ -1,5 +1,5 @@
 import numpy
-from base.convolution import ConvolutionFilter
+from features.convolution.base import ConvolutionFilter
 
 
 class SharpenFilter(ConvolutionFilter):

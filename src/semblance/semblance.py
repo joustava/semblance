@@ -8,19 +8,17 @@ import numpy as np
 # from capture_manager import CaptureManager
 from window_manager import WindowManager
 
-from contours.detection import CircleDetector
-from contours.detection import minimumarea
-from contours.detection import bbox
-
 from webcamvideostream import WebcamVideoStream
 from remotepicamstream import RemotePiCamStream
 
-from face.detector import FaceDetector
-from contours.canny_edge_detector import CannyEdgeDetector
-from scanner.pdf_scanner import PDFScanner
+from features.convolution.filters import EmbossFilter
+
+from features.facedetection.detector import FaceDetector
+from features.edgedetection.canny_edge_detector import CannyEdgeDetector
+from features.documentscanner.pdf_scanner import PDFScanner
 
 faces = FaceDetector()
-# circles = CircleDetector()
+# emboss = EmbossFilter()
 canny = CannyEdgeDetector()
 scanner = PDFScanner()
 
@@ -47,8 +45,8 @@ class Semblance(object):
                 
                 _frame = detectors[self._selection].detect(frame)
                 
-                if(self._overlay):
-                    _frame = np.bitwise_or(_frame, frame)
+                # if(self._overlay):
+                #     _frame = np.bitwise_or(_frame, frame)
                 
                 
                 self._windowManager.show(_frame)
@@ -64,7 +62,7 @@ class Semblance(object):
         if keycode == ord("s"):
             self._take = True
         if keycode == ord("d"):
-            self._toggle()
+            self._cycle_choice()
         if keycode == ord("o"):
             self._overlay = not self._overlay
 
@@ -73,9 +71,9 @@ class Semblance(object):
         path = os.path.expanduser(path)
         cv2.imwrite(path, frame)
 
-    def _toggle(self):
-        if self._selection == 0:
-            self._selection = 1
+    def _cycle_choice(self):
+        if(self._selection < len(detectors) - 1):
+            self._selection += 1
         else:
             self._selection = 0
 
