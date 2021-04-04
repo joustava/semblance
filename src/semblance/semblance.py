@@ -16,13 +16,13 @@ from features.convolution.filters import EmbossFilter
 from features.facedetection.detector import FaceDetector
 from features.edgedetection.canny_edge_detector import CannyEdgeDetector
 from features.documentscanner.pdf_scanner import PDFScanner
-from features.tracking.tracker import TennisBallTracker
+from features.tracking.tennis_ball_detector import TennisBallDetector
 
 faces = FaceDetector()
 # emboss = EmbossFilter()
 canny = CannyEdgeDetector()
 scanner = PDFScanner()
-tracker = TennisBallTracker()
+tracker = TennisBallDetector()
 detectors = [scanner, canny, faces, tracker]
 
 class Semblance(object):
