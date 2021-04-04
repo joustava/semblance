@@ -38,45 +38,45 @@ class CentroidTracker:
             inputCentroids[i] = (cX, cY)
 
 
-            if len(self.trackedObjects) == 0:
-                for i in range(0, len(inputCentroids)):
-                    self.register(inputCentroids[i])
-            else:
-                objectIDs = list(self.trackedObjects.keys())
-                objectCentroids = list(self.trackedObjects.values())
-                
-                D = dist.cdist(np.array(objectCentroids), inputCentroids)
-                
-                rows = D.min(axis=1).argsort()
-                cols = D.argmin(axis=1)[rows]
+        if len(self.trackedObjects) == 0:
+            for i in range(0, len(inputCentroids)):
+                self.register(inputCentroids[i])
+        else:
+            objectIDs = list(self.trackedObjects.keys())
+            objectCentroids = list(self.trackedObjects.values())
+            
+            D = dist.cdist(np.array(objectCentroids), inputCentroids)
+            
+            rows = D.min(axis=1).argsort()
+            cols = D.argmin(axis=1)[rows]
 
+            
+            usedRows = set()
+            usedCols = set()
+            
+            for (row, col) in zip(rows, cols):
                 
-                usedRows = set()
-                usedCols = set()
+                if row in usedRows or col in usedCols:
+                    continue
                 
-                for (row, col) in zip(rows, cols):
-                    
-                    if row in usedRows or col in usedCols:
-                        continue
-                    
+                objectID = objectIDs[row]
+                self.trackedObjects[objectID] = inputCentroids[col]
+                self.disappearedObjects[objectID] = 0
+                
+                usedRows.add(row)
+                usedCols.add(col)
+
+            unusedRows = set(range(0, D.shape[0])).difference(usedRows)
+            unusedCols = set(range(0, D.shape[1])).difference(usedCols)
+
+            if D.shape[0] >= D.shape[1]:
+                for row in unusedRows:
                     objectID = objectIDs[row]
-                    self.trackedObjects[objectID] = inputCentroids[col]
-                    self.disappearedObjects[objectID] = 0
-                   
-                    usedRows.add(row)
-                    usedCols.add(col)
-
-                    unusedRows = set(range(0, D.shape[0])).difference(usedRows)
-                    unusedCols = set(range(0, D.shape[1])).difference(usedCols)
-
-                    if D.shape[0] >= D.shape[1]:
-                        for row in unusedRows:
-                            objectID = objectIDs[row]
-                            self.disappearedObjects[objectID] += 1
-                            if self.disappearedObjects[objectID] > self.trackingThreshold:
-                                self.deregister(objectID)
-                    else:
-                        for col in unusedCols:
-                            self.register(inputCentroids[col])
+                    self.disappearedObjects[objectID] += 1
+                    if self.disappearedObjects[objectID] > self.trackingThreshold:
+                        self.deregister(objectID)
+            else:
+                for col in unusedCols:
+                    self.register(inputCentroids[col])
 
         return self.trackedObjects

@@ -16,7 +16,7 @@ class TennisBallDetector:
     
     def detect(self, frame):
         # Prime the frame for mask extraction by blurring (reducing noise) and conversion to HSL.
-        blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+        blurred = cv2.GaussianBlur(frame.copy(), (11, 11), 0)
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
         # Exract mask for color range (HSV). Apply erosion and dilation to smooth the mask.
@@ -33,19 +33,19 @@ class TennisBallDetector:
             contour = max(contours, key=cv2.contourArea)
             ((x, y), radius) = cv2.minEnclosingCircle(contour)
             
-            objects = self._tracker.update([contour])
+            # objects = self._tracker.update([contour])
             # # find image moment M, to calculate center point of the subject
-            # M = cv2.moments(contour)
+            M = cv2.moments(contour)
             
-            # Cx = int(M["m10"] / M["m00"])
-            # Cy = int(M["m01"] / M["m00"])
-            for (objectID, centroid) in objects.items():
-                # Draw circle and center of subject of interest
-                if radius > 10:
-                    text = "ID {}".format(objectID)
-                    cv2.putText(frame, text, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                    cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-                    cv2.circle(frame, center, 5, (0, 0, 255), -1)
+            Cx = int(M["m10"] / M["m00"])
+            Cy = int(M["m01"] / M["m00"])
+            center = (Cx, Cy)
+            if radius > 10:
+                # text = "ID {}".format(objectID)
+                # cv2.putText(frame, text, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
+                cv2.circle(frame, center, 5, (0, 0, 255), -1)
+        
         elif(len(self._points) > 0):
             self._points.pop()
 

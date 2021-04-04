@@ -12,7 +12,7 @@ class FaceDetector:
     self._min_confidence = confidence
     self._tracker = CentroidTracker()
 
-  def visualize(self, frame, detections):
+  def draw_bboxes(self, frame, detections):
     (H, W) = frame.shape[:2]
     rects = []
     for i in range(0, detections.shape[2]):
@@ -35,32 +35,31 @@ class FaceDetector:
     
     return frame, rects
   
-  def track(self, frame, rects):
-    # update our centroid tracker using the computed set of bounding
-    # box rectangles
+  def draw_centroids(self, frame, rects):
     objects = self._tracker.update(rects)
-    # loop over the tracked objects
+    
     for (objectID, centroid) in objects.items():
-        # draw both the ID of the object and the centroid of the
-        # object on the output frame
         text = "ID {}".format(objectID)
-        cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
     
     return frame
 
   def detect(self, frame):
-    # frame = imutils.resize(image, width=400)
-    (h, w) = frame.shape[:2]
     blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
 
-    # pass the blob through the network and obtain the detections and
-    # predictions
     self._net.setInput(blob)
     detections = self._net.forward()
 
-    frame, rects = self.visualize(frame, detections)
-    self.track(frame, rects)
+    # refactor
+    # 1. get confident detections only
+    # 2. get bboxes of confident detections
+    # 3. get centroids of confident detections
+    # 4. render bboxes
+    # 5. render centroids
+    # 6. render lables (confidence, tracking ids)
+
+    frame, rects = self.draw_bboxes(frame, detections)
+    self.draw_centroids(frame, rects)
 
     return frame
