@@ -4,30 +4,24 @@ from imutils import perspective
 from imutils import contours
 import cv2
 from scipy.spatial import distance
-from features.edgedetection.canny_edge_detector import CannyEdgeDetector
+from features.edgedetection.canny_edge_filter import CannyEdgeFilter
 
 class PDFScanner:
   def __init__(self):
-    self.edge_detector = CannyEdgeDetector()
+    self.edge_filter = CannyEdgeFilter()
     self._kernel = (5, 5)
     self._sigma = 0.4
     self._target = None
     self._area = 0
 
+
   def detect(self, image):
     return self.detect_edges(image)
 
+
   def detect_edges(self, image):
-    grayed = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(grayed, self._kernel, 0, dst=None, sigmaY=None, borderType=None)
-    v = np.median(blurred)
-    lower = int(max(0, (1.0 - self._sigma) * v))
-    upper = int(min(255, (1.0 + self._sigma) * v))
-    edged = cv2.Canny(blurred, lower, upper)
-    edged = cv2.dilate(edged, None, iterations=1)
-    edged = cv2.erode(edged, None, iterations=1)
-    
-    # contours from edges
+    edged = self.edge_filter.apply(image)
+
     ctrs = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if(len(ctrs) > 0):
       self.handle_document(ctrs, image)
