@@ -18,13 +18,15 @@ from features.facedetection.detector import FaceDetector
 from features.edgedetection.canny_edge_detector import CannyEdgeDetector
 from features.documentscanner.pdf_scanner import PDFScanner
 from features.tracking.tennis_ball_detector import TennisBallDetector
+from features.measure.test import SizeDetector
 
 faces = FaceDetector()
 # emboss = EmbossFilter()
 canny = CannyEdgeDetector()
 scanner = PDFScanner()
 tracker = TennisBallDetector()
-detectors = [scanner, canny, faces, tracker]
+measure = SizeDetector()
+detectors = [measure, scanner, canny, faces, tracker]
 
 class Semblance(object):
     def __init__(self, port=0, directory="./tmp"):
