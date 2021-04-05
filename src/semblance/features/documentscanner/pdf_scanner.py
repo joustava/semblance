@@ -8,7 +8,7 @@ from features.edgedetection.canny_edge_filter import CannyEdgeFilter
 
 class PDFScanner:
   def __init__(self):
-    self.edge_filter = CannyEdgeFilter()
+    self.canny_edge_filter = CannyEdgeFilter()
     self._kernel = (5, 5)
     self._sigma = 0.4
     self._target = None
@@ -20,7 +20,7 @@ class PDFScanner:
 
 
   def detect_edges(self, image):
-    edged = self.edge_filter.apply(image)
+    edged = self.canny_edge_filter.apply(image)
 
     ctrs = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if(len(ctrs) > 0):
