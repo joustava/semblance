@@ -5,6 +5,7 @@ from threading import Thread
 import datetime as dt
 import cv2
 import numpy as np
+import argparse
 # from capture_manager import CaptureManager
 from window_manager import WindowManager
 
@@ -26,17 +27,17 @@ tracker = TennisBallDetector()
 detectors = [scanner, canny, faces, tracker]
 
 class Semblance(object):
-    def __init__(self, source=0, directory="./tmp"):
+    def __init__(self, port=0, directory="./tmp"):
         signal.signal(signal.SIGINT, self._handle_signal)
         self._directory = directory
         self._windowManager = WindowManager('Semblance', self._onKeyPress)
         self._selection = 0
         self._overlay = False
         self._take = False
-        if source == 0:
+        if port == 0:
             self._stream = WebcamVideoStream(0).start()
         else:
-            self._stream = RemotePiCamStream(source).start()
+            self._stream = RemotePiCamStream().start()
 
     def run(self):
         self._windowManager.createWindow()
@@ -81,4 +82,12 @@ class Semblance(object):
 
 
 if __name__ == "__main__":
-    Semblance(0).run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-pi', '--picamera', required=False, help='Use remote RPI camera', action='store_true')
+
+    args = vars(parser.parse_args())
+
+    if args['picamera']:
+        Semblance(8000).run()
+    else:
+        Semblance(0).run()
