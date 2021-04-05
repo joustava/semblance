@@ -16,13 +16,14 @@ from features.convolution.filters import EmbossFilter
 from features.facedetection.detector import FaceDetector
 from features.edgedetection.canny_edge_detector import CannyEdgeDetector
 from features.documentscanner.pdf_scanner import PDFScanner
+from features.tracking.tracker import TennisBallTracker
 
 faces = FaceDetector()
 # emboss = EmbossFilter()
 canny = CannyEdgeDetector()
 scanner = PDFScanner()
-
-detectors = [scanner, canny, faces]
+tracker = TennisBallTracker()
+detectors = [scanner, canny, faces, tracker]
 
 class Semblance(object):
     def __init__(self, source=0, directory="./tmp"):
@@ -44,10 +45,6 @@ class Semblance(object):
             if frame is not None:
                 
                 _frame = detectors[self._selection].detect(frame)
-                
-                # if(self._overlay):
-                #     _frame = np.bitwise_or(_frame, frame)
-                
                 
                 self._windowManager.show(_frame)
                 if(self._take):
@@ -84,4 +81,4 @@ class Semblance(object):
 
 
 if __name__ == "__main__":
-    Semblance(8000).run()
+    Semblance(0).run()

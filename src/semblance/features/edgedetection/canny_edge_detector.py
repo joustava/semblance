@@ -31,7 +31,8 @@ class CannyEdgeDetector:
 
         _frame = cv2.cvtColor(_frame, cv2.COLOR_GRAY2RGB)
         _frame *= np.array((1,1,1), np.uint8)
-       
+        _frame = np.bitwise_or(_frame, frame)
+        
         return _frame
 
     def _manu_detect(self, frame):
