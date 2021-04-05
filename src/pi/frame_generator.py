@@ -4,32 +4,21 @@ import socket
 
 class FrameGenerator(object):
     """
-    Splits a stream in frames and puts these onto a tcp socket. 
+    Splits a stream in frames and their sizes and puts these on the output.
     """
-    def __init__(self, address='192.168.2.107', port=8000):
+    def __init__(self, output):
         """
-        Creates a new FrameGenerator that connect to tcp://addres:port
+        Creates a new FrameGenerator with output as the destination of the stream
         """
-        self.connect(address, port)
-
-    def connect(self, addres, port):
-        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._socket.connect((address, port))
-        self._conn = self._socket.makefile('wb')
-
-    def close(self):
-      self._conn.write(struct.pack('<L', 0))
-      self._conn.close()
-      self._socket.close()
+        self.output = output
       
     def frames(self):
         stream = io.BytesIO()
         while True:
             yield stream
-            self._conn.write(struct.pack('<L', stream.tell()))
-            self._conn.flush()
+            self.output.write(struct.pack('<L', stream.tell()))
+            self.output.flush()
             stream.seek(0)
-            self._conn.write(stream.read())
+            self.output.write(stream.read())
             stream.seek(0)
             stream.truncate()
-
