@@ -7,23 +7,15 @@ test:
 coverage:
 	green -r
 
-run:
+run-with-webcam:
 	PYTHONDONTWRITEBYTECODE=1
 	python ./src/semblance/semblance.py
+
+run-with-picam:
+	PYTHONDONTWRITEBYTECODE=1
+	python ./src/semblance/semblance.py --picamera
 
 update-picam:
 	scp -r src/pi/* pi@raspberrypi.local:/home/pi/projects/picam/
 
-run-zmq-hub:
-	PYTHONDONTWRITEBYTECODE=1
-	python ./src/semblance/camera_zmq_hub.py
-
-run-tcp-server:
-	PYTHONDONTWRITEBYTECODE=1
-	python ./src/semblance/camera_tcp_server.py
-
-run-client:
-	PYTHONDONTWRITEBYTECODE=1
-	python ./src/semblance/pi_client.py
-
-.PHONY: init run-tcp-server run-zmq-hub test coverage
+.PHONY: init run-with-webcam run-with-picam test coverage
