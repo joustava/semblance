@@ -5,6 +5,9 @@ import imutils
 import dlib
 import cv2
 
+
+# Download model to same dir first and unzip
+# dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
 class FacialLandmarkDetector:
     def __init__(self, confidence=0.5):
         self.detector = dlib.get_frontal_face_detector()
