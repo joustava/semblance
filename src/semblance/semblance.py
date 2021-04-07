@@ -15,12 +15,14 @@ from remotepicamstream import RemotePiCamStream
 from features.convolution.filters import EmbossFilter
 
 from features.facedetection.detector import FaceDetector
+from features.facedetection.facial_landmark_detector import FacialLandmarkDetector
 from features.edgedetection.canny_edge_detector import CannyEdgeDetector
 from features.documentscanner.pdf_scanner import PDFScanner
 from features.tracking.tennis_ball_detector import TennisBallDetector
 from features.measure.test import SizeDetector
 
 faces = FaceDetector()
+facial = FacialLandmarkDetector()
 # emboss = EmbossFilter()
 canny = CannyEdgeDetector()
 scanner = PDFScanner()
@@ -31,6 +33,7 @@ detectors = [
     (scanner, "Doc Scan"), 
     (canny, "Canny Edges"),
     (faces, "Face Detection"),
+    (facial, "Facial Landmark Detection"),
     (tracker, "Ball Tracker")
 ]
 

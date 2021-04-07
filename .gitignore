@@ -145,6 +145,7 @@ dmypy.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 .vscode
+.DS_Store
 tmp
 wpa_supplicant.conf
 test.py
