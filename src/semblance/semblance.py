@@ -16,6 +16,7 @@ from features.convolution.filters import EmbossFilter
 
 from features.facedetection.detector import FaceDetector
 from features.facedetection.facial_landmark_detector import FacialLandmarkDetector
+from features.facedetection.eye_blink_detector import EyeBlinkDetector
 from features.edgedetection.canny_edge_detector import CannyEdgeDetector
 from features.documentscanner.pdf_scanner import PDFScanner
 from features.tracking.tennis_ball_detector import TennisBallDetector
@@ -28,13 +29,15 @@ canny = CannyEdgeDetector()
 scanner = PDFScanner()
 tracker = TennisBallDetector()
 measure = SizeDetector()
+eyeblink = EyeBlinkDetector()
 detectors = [
     (measure, "Measures"),
     (scanner, "Doc Scan"), 
     (canny, "Canny Edges"),
     (faces, "Face Detection"),
     (facial, "Facial Landmark Detection"),
-    (tracker, "Ball Tracker")
+    (tracker, "Ball Tracker"),
+    (eyeblink, "Eye Blink")
 ]
 
 class Semblance(object):

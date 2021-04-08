@@ -2,6 +2,7 @@ import cv2
 import imutils
 import numpy as np
 from features.tracking.centroid_tracker import CentroidTracker
+
 class FaceDetector:
   """
   This detector uses a pre-trained Caffe model to detect faces in images and draws bounding boxes
