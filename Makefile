@@ -2,10 +2,10 @@ init:
 	pipenv
 
 test:
-	green -vvv
+	poetry green -vvv
 
 coverage:
-	green -r
+	poetry green -r
 
 run-with-webcam:
 	PYTHONDONTWRITEBYTECODE=1
